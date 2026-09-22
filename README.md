@@ -1,153 +1,263 @@
-# AgenticAI_Chatbot_Using_LangGraph
+# 🤖 Agentic Chatbot using LangGraph
 
-# 🚀 CI/CD Deployment of Agentic Chatbot on AWS
+An **Agentic AI Chatbot** built using **LangGraph, LangChain, Streamlit, RAG, Tools, Memory, and Human-in-the-Loop (HITL)**.
 
-This project demonstrates the deployment of an **Agentic Chatbot built with LangGraph** using **Docker, GitHub Actions, Docker Hub, and AWS EC2**.
+The application demonstrates how an agent can understand user queries, use appropriate tools, retrieve information from documents, maintain conversation state, and involve a human when approval is required.
 
-The CI/CD pipeline automates the process of building the Docker image, pushing it to Docker Hub, and deploying the application on an AWS EC2 instance.
+---
 
-## 🏗️ Deployment Architecture
+## 🚀 Features
 
-GitHub Repository
-        ↓
-GitHub Actions
-        ↓
-Build Docker Image
-        ↓
-Push Image to Docker Hub
-        ↓
-AWS EC2 (Ubuntu)
-        ↓
-Pull Docker Image
-        ↓
-Run Docker Container
-        ↓
-Streamlit Application :8501
+- 🤖 **Agentic AI workflow** using LangGraph
+- 🧠 **LangChain & LangGraph** based agent architecture
+- 💬 **Streamlit** interactive chat interface
+- 🔄 **Multi-step agent workflow**
+- 🛠️ **Tool integration** for external actions
+- 📚 **RAG (Retrieval-Augmented Generation)**
+- 🧑‍💻 **Human-in-the-Loop (HITL)** approval workflow
+- 💾 **Conversation persistence** using SQLite
+- 🧠 **Conversation memory**
+- 📊 **LangSmith tracing and observability**
+- 🔐 Environment-based API key configuration
+- 📦 Dependency management using **uv**
+- 🐙 Source code management using **Git & GitHub**
 
-## 🔄 Deployment Steps
+---
 
-### 1. Login to AWS Console
-
-Login to your AWS account and open the AWS Management Console.
-
-### 2. Create IAM User for Deployment
-
-Create an IAM user with the required permissions for deployment.
-
-Example policy:
+## 🏗️ Project Architecture
 
 ```text
-AmazonEC2FullAccess
+                    ┌─────────────────────┐
+                    │      User           │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │    Streamlit UI     │
+                    └──────────┬──────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │     LangGraph       │
+                    │   Agent Workflow    │
+                    └──────────┬──────────┘
+                               │
+              ┌────────────────┼────────────────┐
+              │                │                │
+              ▼                ▼                ▼
+        ┌───────────┐    ┌────────────┐   ┌────────────┐
+        │    LLM    │    │    Tools   │   │    RAG     │
+        └───────────┘    └────────────┘   └────────────┘
+              │                │                │
+              └────────────────┼────────────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │ Conversation Memory │
+                    │    / SQLite DB      │
+                    └─────────────────────┘
+                               │
+                               ▼
+                    ┌─────────────────────┐
+                    │     LangSmith       │
+                    │  Tracing & Eval     │
+                    └─────────────────────┘
 
-3. Create an EC2 Machine
-Create an Ubuntu-based AWS EC2 instance.
-Configure the required security group rules and allow application traffic on:
-
-Port: 8501
-
-
-
-4. Install Docker on EC2
-Connect to the EC2 instance and execute:
-
-sudo apt-get update -y
-
-sudo apt-get upgrade
-
-# Install Docker
-curl -fsSL https://get.docker.com -o get-docker.sh
-
-sudo sh get-docker.sh
-
-sudo usermod -aG docker ubuntu
-
-newgrp docker
+🛠️ Technology Stack
+Category	Technologies
+Programming Language	Python
+Agent Framework	LangGraph
+LLM Framework	LangChain
+UI	Streamlit
+RAG	LangChain RAG
+Vector / Retrieval	FAISS
+Embeddings	Hugging Face
+Database	SQLite
+Observability	LangSmith
+Package Manager	uv
+Version Control	Git, GitHub
 
 
-5. Configure GitHub Actions Self-Hosted Runner
-Configure the EC2 instance as a GitHub Actions self-hosted runner.
-Navigate to:
+📁 Project Structure
+AgenticAI_Chatbot_Using_LangGraph/
+│
+├── app.py
+├── backend.py
+├── pyproject.toml
+├── uv.lock
+├── README.md
+├── .gitignore
+│
+└── chatbot.db
+chatbot.db is a local database file and is intentionally excluded from Git using .gitignore.
 
-GitHub Repository
-    → Settings
-    → Actions
-    → Runners
-    → New self-hosted runner
+⚙️ Local Setup
+1. Clone the repository
+git clone https://github.com/ChirantanSonu2001/AgenticAI_Chatbot_Using_LangGraph.git
+Navigate to the project:
+cd AgenticAI_Chatbot_Using_LangGraph
 
+2. Install uv
+Install uv if it is not already installed.
 
-6. Configure GitHub Actions Secrets
-Add the required secrets under:
+3. Create the project environment
+Run:
+uv sync
 
-GitHub Repository
-    → Settings
-    → Secrets and variables
-    → Actions
-    → New repository secret
-
-
-
-REGISTRY=docker.io
-
-DOCKER_USERNAME=<your-dockerhub-username>
-
-DOCKER_PASSWORD=<your-dockerhub-access-token>
-
-IMAGE_NAME=agentic-chatbot
-
-AWS_ACCESS_KEY_ID=<your-aws-access-key>
-
-AWS_SECRET_ACCESS_KEY=<your-aws-secret-key>
-
-AWS_REGION=us-east-1
-
-OPENAI_API_KEY=<your-openai-api-key>
-
-TAVILY_API_KEY=<your-tavily-api-key>
-
-OPENWEATHER_API_KEY=<your-openweather-api-key>
-
-GOOGLE_API_KEY=<your-google-api-key>
+4. Configure environment variables
+Create a .env file in the project root.
+Example:
+OPENAI_API_KEY=your-openai-api-key
+TAVILY_API_KEY=your-tavily-api-key
+OPENWEATHER_API_KEY=your-openweather-api-key
+GOOGLE_API_KEY=your-google-api-key
 
 LANGSMITH_TRACING=true
-
 LANGSMITH_ENDPOINT=https://api.smith.langchain.com
-
-LANGSMITH_API_KEY=<your-langsmith-api-key>
-
+LANGSMITH_API_KEY=your-langsmith-api-key
 LANGSMITH_PROJECT=agentic-chatbot-project
 
+Run the Application
+Start the Streamlit application using:
+uv run streamlit run app.py
+
+The application will be available at:
+http://localhost:8501
+
+🧑‍💻 Human-in-the-Loop
+
+The project demonstrates a Human-in-the-Loop (HITL) workflow using LangGraph.
+The agent can pause its execution when human approval is required.
+Example flow:
+User Request
+     ↓
+LangGraph Agent
+     ↓
+Decision / Action
+     ↓
+Human Approval Required
+     ↓
+┌───────────────┐
+│   Approve?    │
+│     Y / N     │
+└───────┬───────┘
+        │
+   ┌────┴────┐
+   ▼         ▼
+Approve     Reject
+   │         │
+   ▼         ▼
+Continue    Stop
+
+This provides an additional control layer before performing sensitive or important agent actions.
+
+📚 RAG Workflow
+
+The application includes a Retrieval-Augmented Generation workflow.
+Document
+   ↓
+Document Loading
+   ↓
+Text Splitting
+   ↓
+Embeddings
+   ↓
+Vector Store
+   ↓
+Similarity Search
+   ↓
+Relevant Context
+   ↓
+LLM
+   ↓
+Response
+
+RAG allows the chatbot to retrieve relevant information from the available knowledge source before generating a response.
+
+🧠 Conversation Memory
+
+The chatbot maintains conversation state to support multi-turn interactions.
+The project uses SQLite for local persistence.
+User Message
+     ↓
+LangGraph
+     ↓
+Conversation State
+     ↓
+SQLite Database
+     ↓
+Previous Messages
+     ↓
+Context-aware Response
+
+📊 LangSmith
+
+LangSmith is used for tracing and observing the application's LLM and agent workflows.
+It helps in understanding:
+- Agent execution
+- LLM calls
+- Tool calls
+- Retrieval steps
+- Execution flow
+- Debugging
+Configure LangSmith through the .env file.
 
 
-🐳 Docker Deployment
+🚀 Deployment Status
 
-The application is packaged into a Docker image and pushed to Docker Hub.
-On the EC2 instance, the Docker image can then be pulled using:
+✅ Currently Implemented
+The following components are currently implemented and tested locally:
+- Agentic AI chatbot
+- LangGraph agent workflow
+- LangChain integration
+- Streamlit UI
+- RAG workflow
+- Tool integration
+- Human-in-the-Loop workflow
+- SQLite conversation persistence
+- LangSmith integration
+- uv dependency management
+- Git version control
+- GitHub repository
 
-docker pull <dockerhub-username>/agentic-chatbot:latest
-
-Run the container with port mapping:
-
-docker run -d \
-  -p 8501:8501 \
-  --name agentic-chatbot \
-  <dockerhub-username>/agentic-chatbot:latest
-
-EC2 Port 8501 → Docker Container Port 8501
 
 
-🔑 Technologies Used
-- Python
-- LangGraph
-- LangChain
-- Streamlit
-- Docker
-- Docker Hub
-- GitHub Actions
-- GitHub Self-Hosted Runner
-- AWS EC2
-- AWS IAM
-- OpenAI API
-- Tavily API
-- OpenWeather API
-- Google API
-- LangSmith
+🔄 Planned / Future Work
+
+The following deployment components are planned for the next phase:
+- 🐳 Docker containerization
+- 📦 Docker Hub image publishing
+- ☁️ AWS EC2 deployment
+- ⚙️ GitHub Actions CI/CD pipeline
+- 🏃 GitHub Actions self-hosted runner
+- 🔄 Automated Docker image build and deployment
+- 🌐 Production deployment of the Streamlit application
+Note: Docker, Docker Hub, AWS EC2, and GitHub Actions CI/CD deployment have not been implemented yet. The current version of the application is running locally.
+
+
+📌 Future Architecture
+
+The planned production deployment architecture is:
+GitHub Repository
+       ↓
+GitHub Actions
+       ↓
+Docker Build
+       ↓
+Docker Hub
+       ↓
+AWS EC2
+       ↓
+Docker Container
+       ↓
+Streamlit Application
+       ↓
+Port 8501
+This section represents the planned architecture only and is not currently deployed.
+
+
+
+👨‍💻 Author
+Chirantan Bhatta
+GitHub:
+https://github.com/ChirantanSonu2001
